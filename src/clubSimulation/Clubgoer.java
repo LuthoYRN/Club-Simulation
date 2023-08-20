@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class Clubgoer extends Thread {
 	
 	public static ClubGrid club; //shared club
+   public static Barman andre;
 
 	GridBlock currentBlock;
 	private Random rand;
@@ -20,10 +21,10 @@ public class Clubgoer extends Thread {
 	private PeopleLocation myLocation;
 	private boolean inRoom;
 	private boolean thirsty;
+   private int drinksCounter;
 	private boolean wantToLeave;
 	
 	private int ID; //thread ID 
-
 	
 	Clubgoer( int ID,  PeopleLocation loc,  int speed) {
 		this.ID=ID;
@@ -31,6 +32,7 @@ public class Clubgoer extends Thread {
 		this.myLocation = loc; //for easy lookups
 		inRoom=false; //not in room yet
 		thirsty=true; //thirsty when arrive
+      drinksCounter=0; //have not been served a drink
 		wantToLeave=false;	 //want to stay when arrive
 		rand=new Random();
       pause = new AtomicBoolean(false);
@@ -50,7 +52,9 @@ public class Clubgoer extends Thread {
 	public  boolean inRoom() {
 		return inRoom;
 	}
-	
+	public int getID(){
+      return ID;
+   }
 	//getter
 	public   int getX() { return currentBlock.getX();}	
 	
@@ -87,12 +91,28 @@ public class Clubgoer extends Thread {
         return;
     }
     }
+    
+   //my code
+   public void requestDrinkFromBartender() {
+        //wait for Andre (bartender) to serve a drink
+         synchronized (this) {
+        // Notify Andre (bartender) to serve a drink
+        System.out.println("Thread " + this.ID + " requested drink at bar position: " + currentBlock.getX() + " " + currentBlock.getY());
+        andre.addToQueue(this);
+        try {
+            wait(); // Use andre object for synchronization
+        } catch (InterruptedException e) {
+            System.err.println(e);
+        }
+    }    
+   }
 	
 	//get drink at bar
 		private void getDrink() throws InterruptedException {
-			//FIX SO BARMAN GIVES THE DRINK AND IT IS NOT AUTOMATIC
+         requestDrinkFromBartender();
 			thirsty=false;
-			System.out.println("Thread "+this.ID + " got drink at bar position: " + currentBlock.getX()  + " " +currentBlock.getY() );
+         drinksCounter++;
+			System.out.println("Thread "+this.ID + " got served drink at bar position: " + currentBlock.getX()  + " " +currentBlock.getY() );
 			sleep(movingSpeed*5);  //wait a bit
 		}
 		
@@ -179,7 +199,7 @@ public class Clubgoer extends Thread {
 						wantToLeave=true; //at some point want to leave
 				}
 				
-				if (wantToLeave) {	 //leaving overides thirsty	
+				if ((wantToLeave) && (drinksCounter!=0)) {	 //leaves after being served atleast once	
 					sleep(movingSpeed/5);  //wait a bit		
 					if (currentBlock.isExit()) { 
 						leave();
@@ -194,8 +214,7 @@ public class Clubgoer extends Thread {
 					sleep(movingSpeed/5);  //wait a bit		
 					if (currentBlock.isBar()) {
 						getDrink();
-						System.out.println("Thread "+this.ID + " got drink " );
-					}
+							}
 					else {
 						System.out.println("Thread "+this.ID + " going to getDrink " );
 						headToBar();

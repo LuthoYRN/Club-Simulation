@@ -15,7 +15,7 @@ public class ClubGrid {
 	private final static int minX =5;//minimum x dimension
 	private final static int minY =5;//minimum y dimension
 	
-	private PeopleCounter counter;
+	public PeopleCounter counter;
 	
 	ClubGrid(int x, int y, int [] exitBlocks,PeopleCounter c) throws InterruptedException {
 		if (x<minX) x=minX; //minimum x
@@ -76,7 +76,8 @@ public class ClubGrid {
     
     //my code
       while ((counter.getInside()+1 > counter.getMax())) {
-          wait();
+         synchronized (entrance){
+          entrance.wait();}
     }
       counter.personEntered(); //add to counter
 		myLocation.setLocation(entrance);

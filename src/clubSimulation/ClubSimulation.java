@@ -13,16 +13,17 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClubSimulation {
    public static CountDownLatch startLatch;
-	static int noClubgoers=30;
+	static int noClubgoers=10;
    	static int frameX=400;
 	static int frameY=500;
 	static int yLimit=400;
-	static int gridX=20; //number of x grids in club - default value if not provided on command line
-	static int gridY=20; //number of y grids in club - default value if not provided on command line
-	static int max=15; //max number of customers - default value if not provided on command line
+	static int gridX=10; //number of x grids in club - default value if not provided on command line
+	static int gridY=10; //number of y grids in club - default value if not provided on command line
+	static int max=5; //max number of customers - default value if not provided on command line
 	
 	static Clubgoer[] patrons; // array for customer threads
 	static PeopleLocation [] peopleLocations;  //array to keep track of where customers are
+   static PeopleLocation barManLocation;
 	
 	static PeopleCounter tallys; //counters for number of people inside and outside club
 
@@ -43,7 +44,7 @@ public class ClubSimulation {
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
       	g.setSize(frameX,frameY);
  	    
-		clubView = new ClubView(peopleLocations, clubGrid, exits);
+		clubView = new ClubView(peopleLocations,barManLocation, clubGrid, exits);
 		clubView.setSize(frameX,frameY);
 	    g.add(clubView);
 	    
@@ -133,11 +134,14 @@ public class ClubSimulation {
 		//hardcoded exit doors
 		int [] exit = {0,(int) gridY/2-1};  //once-cell wide door on left
 				
-	    tallys = new PeopleCounter(max); //counters for people inside and outside club
+	   tallys = new PeopleCounter(max); //counters for people inside and outside club
 		clubGrid = new ClubGrid(gridX, gridY, exit,tallys); //setup club with size and exitsand maximum limit for people    
 		Clubgoer.club = clubGrid; //grid shared with class
-	   
-	    peopleLocations = new PeopleLocation[noClubgoers];
+      Barman.club = clubGrid;
+	   Clubgoer.andre = new Barman(new PeopleLocation(Integer.MAX_VALUE));
+      
+      barManLocation = Clubgoer.andre.location;      
+	   peopleLocations = new PeopleLocation[noClubgoers];
 		patrons = new Clubgoer[noClubgoers];
 		
 		Random rand = new Random();
@@ -156,6 +160,7 @@ public class ClubSimulation {
       	Thread s = new Thread(counterDisplay);  
       	s.start();
          startLatch = new CountDownLatch(1);
+         Clubgoer.andre.start();
       	for (int i=0;i<noClubgoers;i++) {
 			patrons[i].start();
 		}
