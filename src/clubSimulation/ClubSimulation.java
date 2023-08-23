@@ -13,18 +13,16 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClubSimulation {
    public static CountDownLatch startLatch;
-	static int noClubgoers=10;
+	static int noClubgoers=20;
    	static int frameX=400;
 	static int frameY=500;
 	static int yLimit=400;
-	static int gridX=10; //number of x grids in club - default value if not provided on command line
-	static int gridY=10; //number of y grids in club - default value if not provided on command line
-	static int max=5; //max number of customers - default value if not provided on command line
+	static int gridX=20; //number of x grids in club - default value if not provided on command line
+	static int gridY=20; //number of y grids in club - default value if not provided on command line
+	static int max=10; //max number of customers - default value if not provided on command line
 	
 	static Clubgoer[] patrons; // array for customer threads
-	static PeopleLocation [] peopleLocations;  //array to keep track of where customers are
-   static PeopleLocation barManLocation;
-	
+	static PeopleLocation [] peopleLocations;  //array to keep track of where customers are	
 	static PeopleCounter tallys; //counters for number of people inside and outside club
 
 	static ClubView clubView; //threaded panel to display terrain
@@ -44,7 +42,7 @@ public class ClubSimulation {
         g.setLayout(new BoxLayout(g, BoxLayout.PAGE_AXIS)); 
       	g.setSize(frameX,frameY);
  	    
-		clubView = new ClubView(peopleLocations,barManLocation, clubGrid, exits);
+		clubView = new ClubView(peopleLocations, clubGrid, exits);
 		clubView.setSize(frameX,frameY);
 	    g.add(clubView);
 	    
@@ -85,6 +83,7 @@ public class ClubSimulation {
                if (!(patrons[0].getPauseVariable()))
                {
                   pauseB.setText("Resume");
+                  Clubgoer.andre.pauseThread();
                   for (int i=0;i<noClubgoers;i++) {
 		         	patrons[i].pauseThread();
                }
@@ -92,6 +91,7 @@ public class ClubSimulation {
                else
                {
                   pauseB.setText("Pause");
+                  Clubgoer.andre.resumeThread();
                   for (int i=0;i<noClubgoers;i++) {
 		         	patrons[i].resumeThread();
                } 
@@ -136,14 +136,14 @@ public class ClubSimulation {
 				
 	   tallys = new PeopleCounter(max); //counters for people inside and outside club
 		clubGrid = new ClubGrid(gridX, gridY, exit,tallys); //setup club with size and exitsand maximum limit for people    
-		Clubgoer.club = clubGrid; //grid shared with class
+		clubGrid.setBarManID(noClubgoers);
+      Clubgoer.club = clubGrid; //grid shared with class
       Barman.club = clubGrid;
-	   Clubgoer.andre = new Barman(new PeopleLocation(Integer.MAX_VALUE));
-      
-      barManLocation = Clubgoer.andre.location;      
-	   peopleLocations = new PeopleLocation[noClubgoers];
+      peopleLocations = new PeopleLocation[noClubgoers+1];
+      peopleLocations[noClubgoers]=new PeopleLocation(noClubgoers);
+	   Clubgoer.andre = new Barman(noClubgoers,peopleLocations[noClubgoers],300);
+      Clubgoer.andre.maxPeople = noClubgoers;     
 		patrons = new Clubgoer[noClubgoers];
-		
 		Random rand = new Random();
       
         for (int i=0;i<noClubgoers;i++) {
@@ -151,7 +151,7 @@ public class ClubSimulation {
         		int movingSpeed=(int)(Math.random() * (maxWait-minWait)+minWait); //range of speeds for customers
     			patrons[i] = new Clubgoer(i,peopleLocations[i],movingSpeed);
     		}
-		           
+                 
 		setupGUI(frameX, frameY,exit);  //Start Panel thread - for drawing animation
         //start all the threads
 		Thread t = new Thread(clubView); 
@@ -164,6 +164,11 @@ public class ClubSimulation {
       	for (int i=0;i<noClubgoers;i++) {
 			patrons[i].start();
 		}
+         for (int i=0;i<noClubgoers;i++) {
+   			patrons[i].join();
+   		}
+         System.out.println("Club closed");
+         System.exit(0);
  	}
 
 }
