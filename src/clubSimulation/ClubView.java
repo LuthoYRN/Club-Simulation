@@ -17,18 +17,18 @@ public class ClubView extends JPanel implements Runnable {
 
 		ClubGrid grid; //shared grid
 		
-		ClubView(PeopleLocation[] custs,PeopleLocation barpersonLocation, ClubGrid grid,int []exits) { //constructor
+		ClubView(PeopleLocation[] custs, ClubGrid grid,int []exits) { //constructor
 			this.patronLocations=custs; 
-			noPatrons = custs.length;
-         this.barpersonLocation = barpersonLocation;
-			this.grid = grid;
+         this.barpersonLocation=custs[custs.length-1];
+			noPatrons = custs.length-1;
+      	this.grid = grid;
 			this.exits=exits;
 			this.maxY = grid.getMaxY();
-		    this.maxX= grid.getMaxX();
-		    int width = getWidth();
-		    int height = getHeight();
-		    wIncr= width/(maxX+2); //1 space on either side
-		    hIncr= height/(maxY+2);//2 spaces on bottom
+		   this.maxX= grid.getMaxX();
+		   int width = getWidth();
+		   int height = getHeight();
+		   wIncr= width/(maxX+2); //1 space on either side
+		   hIncr= height/(maxY+2);//2 spaces on bottom
 		}
 		
 		public void paintComponent(Graphics g) {
