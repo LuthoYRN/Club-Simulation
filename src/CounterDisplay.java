@@ -1,5 +1,3 @@
-package clubSimulation;
-
 import java.awt.Color;
 
 import javax.swing.JLabel;

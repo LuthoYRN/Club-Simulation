@@ -1,13 +1,8 @@
-package clubSimulation;
 // the main class, starts all threads
 import javax.swing.*;
-
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Random;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ClubSimulation {
     public static CountDownLatch startLatch;
@@ -139,8 +134,6 @@ public class ClubSimulation {
         Clubgoer.andre = new Barman(noClubgoers, peopleLocations[noClubgoers], 300); //barman
         Clubgoer.andre.maxPeople = noClubgoers;
         patrons = new Clubgoer[noClubgoers];
-        Random rand = new Random();
-
         for (int i = 0; i < noClubgoers; i++) {
             peopleLocations[i] = new PeopleLocation(i);
             int movingSpeed = (int) (Math.random() * (maxWait - minWait) + minWait); // Range of speeds for customers

@@ -1,4 +1,3 @@
-package clubSimulation;
 import java.util.concurrent.atomic.*;
 
 // Class to count and manage people inside and outside the club

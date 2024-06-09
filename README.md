@@ -38,7 +38,7 @@ Follow these steps to get a local copy up and running:
    make run ARGS="<no.Of.ClubGoers> <gridX> <gridY> <maxOccupancy>"
    ```
    Example: 
-   make run ARGS="10 20 20 100" will run 10 club goers in a 20 by 20 club grid with max occupancy of 100 club goers.
+   make run ARGS="10 20 20 100" will run 10 club goers in a 20 by 20 club grid with maximum occupancy of 100 club goers at a time.
 ---
 
 *Happy coding!* 🎵🕺💃

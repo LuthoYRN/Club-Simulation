@@ -1,7 +1,4 @@
 // Grid for the club
-
-package clubSimulation;
-
 // This class represents the club as a grid of GridBlocks
 public class ClubGrid {
     private GridBlock[][] Blocks;
