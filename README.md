@@ -1,18 +1,43 @@
-#Concurrency Assignment: Club Simulation
+# 🎉 Club Simulation 🎉
 
-This program simulates a club scenario using concurrency. Multiple patrons (threads) interact with the club environment, following specified behavior rules. The simulation offers insights into how patrons enter, move within, and leave the club while respecting occupancy limits and concurrency principles.
+Welcome to the **Club Simulation** project! This Java application simulates a vibrant nightclub environment where patrons enter, dance, visit the bar, and exit. Dive into the world of concurrency and graphical interfaces with this fun and interactive project!
 
-## Getting Started
+## 📖 About the Project
 
-1. **Download the Project:** Download the project folder containing all the required files.
+The Club Simulation project is a multi-threaded Java application that simulates a nightclub environment. Patrons can arrive, move around the club, dance, visit the bar, and eventually leave. This project showcases the use of concurrency, graphical user interfaces, and synchronization in Java.
 
-2. **Compile the Code:** Open your terminal/command prompt and navigate to the project directory. Compile the Java code using the provided Makefile:
+<img src="images/simulation.png">
 
-e.g
-    make
+## ✨ Features
 
-3. Execute the program using the make run command, providing arguments for grid dimensions and the maximum club occupancy. 
-e.g	
-	make run ARGS="<no.Of.ClubGoers> <gridX> <gridY> <maxOccupancy>"
+- **Real-time Simulation**: Watch patrons move around the club in real-time.
+- **Graphical Interface**: Visually appealing GUI using Swing.
+- **Concurrency**: Multi-threaded environment with synchronized actions.
+- **Dynamic Updates**: Live updates of people entering, dancing, and leaving the club.
 
-4. Output: Upon running the program, the simulation will display patrons' actions and movements within the club. Observe how patrons enter, interact, and exit the club while adhering to concurrency principles and behavior rules.
+---
+
+## 🚀 Installation
+
+Follow these steps to get a local copy up and running:
+
+1. **Clone the repo**
+   ```sh
+   git clone https://github.com/LuthoYRN/club-simulation.git
+   ```
+2. **Navigate to the project directory**
+   ```sh
+   cd club-simulation
+   ```
+3. **Compile the Java files**
+   ```sh
+   make
+   ```
+4. **Run the application**
+   ```sh
+   make run ARGS="<no.Of.ClubGoers> <gridX> <gridY> <maxOccupancy>"
+   ```
+
+---
+
+*Happy coding!* 🎵🕺💃

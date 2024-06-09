@@ -12,6 +12,7 @@ public class PeopleLocation  { // this is a separate class so don't have to acce
 	private AtomicBoolean arrived; //have they arrived at the club?
 	private GridBlock location; //which GridBlock are they on?
 	
+   //Constructor
 	PeopleLocation(int ID ) {
 		Random rand = new Random();
 		float c = rand.nextFloat(); //bit of a hack to get different colours
@@ -56,6 +57,6 @@ public class PeopleLocation  { // this is a separate class so don't have to acce
 		return inRoom.get();
 	}
 	//getter and setter
-	public Color getColor() { return myColor; }
-	public void setColor(Color myColor) { this.myColor= myColor; }
+	public synchronized Color getColor() { return myColor; }
+	public synchronized void setColor(Color myColor) { this.myColor= myColor; }
 }

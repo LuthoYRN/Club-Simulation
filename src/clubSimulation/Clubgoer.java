@@ -1,4 +1,3 @@
-//M. M. Kuttel 2023 mkuttel@gmail.com
 package clubSimulation;
 
 import java.util.Random;
@@ -17,7 +16,7 @@ public class Clubgoer extends Thread {
 	GridBlock currentBlock;
 	private Random rand;
 	private int movingSpeed;
-	private AtomicBoolean pause;
+	public static AtomicBoolean pause;
 	private PeopleLocation myLocation;
 	private boolean inRoom;
 	private boolean thirsty;
@@ -26,6 +25,7 @@ public class Clubgoer extends Thread {
 	
 	private int ID; //thread ID 
 	
+   //Constructor
 	Clubgoer( int ID,  PeopleLocation loc,  int speed) {
 		this.ID=ID;
 		movingSpeed=speed; //range of speeds for customers
@@ -37,17 +37,7 @@ public class Clubgoer extends Thread {
 		rand=new Random();
       pause = new AtomicBoolean(false);
 	}
-	//my code
-   public boolean getPauseVariable(){
-      return pause.get();
-   }
-   public void pauseThread(){
-      pause.set(true);
-   }
    
-   public void resumeThread(){
-      pause.set(false);
-   }
 	//getter
 	public  boolean inRoom() {
 		return inRoom;
@@ -63,15 +53,14 @@ public class Clubgoer extends Thread {
 	
 	//getter
 	public   int getSpeed() { return movingSpeed; }
-
-	//setter
-
+   
 	//check to see if user pressed pause button
 	private void checkPause() {
-		// my code
      while (pause.get()){
      try{
-      sleep(100);
+        synchronized(pause){ //putting thread in wait set when pause is true
+         pause.wait();
+         }
       }
      catch (InterruptedException e) {
         Thread.currentThread().interrupt();
@@ -81,8 +70,8 @@ public class Clubgoer extends Thread {
     }    
    }
 
+//method to make threads wait for a CountdownLatch to open before starting 
 	private void startSim() {
-		// my code
        try {
         ClubSimulation.startLatch.await(); 
     } catch (InterruptedException e) {
@@ -100,7 +89,7 @@ public class Clubgoer extends Thread {
         System.out.println("Thread " + this.ID + " requested drink at bar position: " + currentBlock.getX() + " " + currentBlock.getY());
         andre.addToQueue(this);
         try {
-            wait(); // Use andre object for synchronization
+            wait(); //wait for andre to serve drink
         } catch (InterruptedException e) {
             System.err.println(e);
         }
@@ -120,6 +109,7 @@ public class Clubgoer extends Thread {
 	//DO NOT CHANGE THE CODE BELOW HERE - it is not necessary
 	//clubgoer enters club
 	public synchronized void enterClub() throws InterruptedException {
+   
 		currentBlock = club.enterClub(myLocation);  //enter through entrance
 		inRoom=true;
 		System.out.println("Thread "+this.ID + " entered club at position: " + currentBlock.getX()  + " " +currentBlock.getY() );
